@@ -1,4 +1,4 @@
-// Lab 9-19.cpp - displays two monthly car payments
+// Lab 9-2.cpp - displays two monthly car payments
 // Created/revised by <your name> on <current date>
 
 #include <iostream>
@@ -7,7 +7,7 @@
 using namespace std;
 
 // Function prototype
-double getPayment(int, double, int);
+double getPayment(int principal, double monthlyRate, int months);
 
 int main()
 {
@@ -36,44 +36,52 @@ int main()
     creditRate /= 100;
     dealerRate /= 100;
 
-    // Call function to calculate payments
+    // Calculate monthly payments
     creditPayment = getPayment(carPrice - rebate, creditRate / 12, term * 12);
     dealerPayment = getPayment(carPrice, dealerRate / 12, term * 12);
 
-    // Display payments
+    // Display results
     cout << fixed << setprecision(2) << endl;
 
     if (creditPayment == -1)
+    {
         cout << "Error: Invalid loan calculation for Credit Union.\n";
+    }
     else
+    {
         cout << "Credit union monthly payment: $" << creditPayment << endl;
+        cout << "Total amount paid through Credit Union: $" << (creditPayment * term * 12) << endl;
+    }
 
     if (dealerPayment == -1)
+    {
         cout << "Error: Invalid loan calculation for Dealer.\n";
+    }
     else
+    {
         cout << "Dealer monthly payment: $" << dealerPayment << endl;
-
-    // Display total amounts paid over the loan term
-    if (creditPayment != -1)
-        cout << "Total amount paid through Credit Union: $" << (creditPayment * term * 12) << endl;
-
-    if (dealerPayment != -1)
         cout << "Total amount paid through Dealer: $" << (dealerPayment * term * 12) << endl;
+    }
 
     return 0;
 } // End of main function
 
 // ***** Function Definition *****
-double getPayment(int prin, double monthRate, int months)
+double getPayment(int principal, double monthlyRate, int months)
 {
-    // Check for invalid denominator
-    if (monthRate == 0) // Handling 0% interest case
-        return (double)prin / months; // Simple division if no interest
+    // Handle 0% interest rate
+    if (monthlyRate == 0)
+    {
+        return static_cast<double>(principal) / months;
+    }
 
-    double denominator = (1 - pow(1 + monthRate, -months));
+    // Calculate denominator and validate
+    double denominator = (1 - pow(1 + monthlyRate, -months));
     if (denominator == 0)
-        return -1; // Return -1 to indicate error
+    {
+        return -1; // Return -1 to indicate an error
+    }
 
     // Calculate and return monthly payment
-    return prin * monthRate / denominator;
+    return principal * monthlyRate / denominator;
 } // End of getPayment function
