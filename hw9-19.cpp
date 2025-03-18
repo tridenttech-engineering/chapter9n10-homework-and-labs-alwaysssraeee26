@@ -1,4 +1,4 @@
-// Lab 9-19.cpp - displays two monthly car payments
+// Lab 9-2.cpp - displays two monthly car payments
 // Created/revised by <your name> on <current date>
 
 #include <iostream>
@@ -25,12 +25,16 @@ int main()
     cin >> carPrice;
     cout << "Rebate: ";
     cin >> rebate;
-    cout << "Credit union rate: ";
+    cout << "Credit union rate (as %): ";
     cin >> creditRate;
-    cout << "Dealer rate: ";
+    cout << "Dealer rate (as %): ";
     cin >> dealerRate;
     cout << "Term in years: ";
     cin >> term;
+
+    // Convert rates from percentage to decimal
+    creditRate /= 100;
+    dealerRate /= 100;
 
     // Call function to calculate payments
     creditPayment = getPayment(carPrice - rebate, creditRate / 12, term * 12);
@@ -42,12 +46,12 @@ int main()
     if (creditPayment == -1)
         cout << "Error: Invalid loan calculation for Credit Union.\n";
     else
-        cout << "Credit union payment: $" << creditPayment << endl;
+        cout << "Credit union monthly payment: $" << creditPayment << endl;
 
     if (dealerPayment == -1)
         cout << "Error: Invalid loan calculation for Dealer.\n";
     else
-        cout << "Dealer payment: $" << dealerPayment << endl;
+        cout << "Dealer monthly payment: $" << dealerPayment << endl;
 
     // Display total amounts paid over the loan term
     if (creditPayment != -1)
@@ -63,11 +67,13 @@ int main()
 double getPayment(int prin, double monthRate, int months)
 {
     // Check for invalid denominator
+    if (monthRate == 0) // Handling 0% interest case
+        return (double)prin / months; // Simple division if no interest
+
     double denominator = (1 - pow(1 + monthRate, -months));
     if (denominator == 0)
         return -1; // Return -1 to indicate error
 
     // Calculate and return monthly payment
-    double monthPay = prin * monthRate / denominator;
-    return monthPay;
+    return prin * monthRate / denominator;
 } // End of getPayment function
