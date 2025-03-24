@@ -1,4 +1,4 @@
-// Lab9-2.cpp - displays two monthly car payments
+// Lab9-19.cpp - displays two monthly car payments
 // Created/revised by <your name> on <current date>
 
 #include <iostream>
@@ -18,6 +18,8 @@ int main()
     int term = 0;
     double creditPayment = 0.0;
     double dealerPayment = 0.0;
+    double creditTotal = 0.0;
+    double dealerTotal = 0.0;
 
     cout << "Car price (after any trade-in): ";
     cin >> carPrice;
@@ -34,38 +36,39 @@ int main()
     creditPayment = getPayment(carPrice - rebate, creditRate / 12, term * 12);
     dealerPayment = getPayment(carPrice, dealerRate / 12, term * 12);
 
-    // Check if payments were successfully calculated
-    if (creditPayment == -1 || dealerPayment == -1)
+    // Calculate total payments
+    if (creditPayment != -1)
+        creditTotal = creditPayment * term * 12;
+    if (dealerPayment != -1)
+        dealerTotal = dealerPayment * term * 12;
+
+    // Display payments and totals
+    cout << fixed << setprecision(2) << endl;
+    if (creditPayment != -1)
     {
-        cout << "Error: Denominator in the formula is 0." << endl;
+        cout << "Credit union payment: $" << creditPayment << endl;
+        cout << "Total amount paid through credit union: $" << creditTotal << endl;
     }
     else
+        cout << "Credit union payment calculation error." << endl;
+
+    if (dealerPayment != -1)
     {
-        // Display monthly payments
-        cout << fixed << setprecision(2) << endl;
-        cout << "Credit union payment: $" << creditPayment << endl;
         cout << "Dealer payment: $" << dealerPayment << endl;
-
-        // Calculate total payments
-        double creditTotal = creditPayment * term * 12;
-        double dealerTotal = dealerPayment * term * 12;
-
-        // Display total amounts
-        cout << "Total amount paid through credit union: $" << creditTotal << endl;
         cout << "Total amount paid through dealer: $" << dealerTotal << endl;
     }
+    else
+        cout << "Dealer payment calculation error." << endl;
 
     return 0;
 }
 
-// ****** Function Definition ******
+// Function definition
 double getPayment(int prin, double monthRate, int months)
 {
-    if (1 - pow(1 + monthRate, -months) == 0)
+    if (monthRate == 0 || months == 0)
     {
-        return -1; // Return -1 if the denominator is 0
+        return -1; // Return -1 if the denominator is zero
     }
-    double monthPay = 0.0;
-    monthPay = prin * monthRate / (1 - pow(1 + monthRate, -months));
-    return monthPay;
+    return prin * monthRate / (1 - pow(1 + monthRate, -months));
 }
