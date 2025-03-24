@@ -37,13 +37,13 @@ int main()
     creditPayment = getPayment(carPrice - rebate, creditRate / 12, term * 12);
     dealerPayment = getPayment(carPrice, dealerRate / 12, term * 12);
 
-    // Calculate total amounts
+    // Calculate total amounts if valid payments were returned
     if (creditPayment != -1)
         creditTotal = creditPayment * (term * 12);
     if (dealerPayment != -1)
         dealerTotal = dealerPayment * (term * 12);
 
-    // Display payments and totals
+    // Display results
     cout << fixed << setprecision(2) << endl;
 
     if (creditPayment != -1)
@@ -52,7 +52,7 @@ int main()
         cout << "Total amount paid through credit union: $" << creditTotal << endl;
     }
     else
-        cout << "Error: Invalid calculation for credit union payment (denominator was zero)." << endl;
+        cout << "Error: Invalid calculation for credit union payment (denominator was zero or invalid inputs)." << endl;
 
     if (dealerPayment != -1)
     {
@@ -60,7 +60,7 @@ int main()
         cout << "Total amount paid through dealer: $" << dealerTotal << endl;
     }
     else
-        cout << "Error: Invalid calculation for dealer payment (denominator was zero)." << endl;
+        cout << "Error: Invalid calculation for dealer payment (denominator was zero or invalid inputs)." << endl;
 
     return 0;
 }
@@ -68,13 +68,15 @@ int main()
 // ****** Function Definition ******
 double getPayment(int prin, double monthRate, int months)
 {
-    if (months <= 0) // Invalid term
+    if (months <= 0)
         return -1;
 
-    double denominator = (1 - pow(1 + monthRate, -months));
-    if (denominator == 0) // Check denominator
+    double powerTerm = pow(1 + monthRate, -months);
+    double denominator = 1 - powerTerm;
+
+    if (denominator == 0) // Check if the denominator is zero
         return -1;
 
-    double monthPay = prin * monthRate / denominator;
+    double monthPay = (prin * monthRate) / denominator;
     return monthPay;
 }
