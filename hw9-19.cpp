@@ -7,7 +7,7 @@
 using namespace std;
 
 // Function prototype
-double getPayment(int, double, int);
+void getPayment(int, double, int, double&, double&);
 
 int main()
 {
@@ -21,6 +21,7 @@ int main()
     double creditTotal = 0.0;
     double dealerTotal = 0.0;
 
+    // Input data
     cout << "Car price (after any trade-in): ";
     cin >> carPrice;
     cout << "Rebate: ";
@@ -32,17 +33,11 @@ int main()
     cout << "Term in years: ";
     cin >> term;
 
-    // Call function to calculate payments
-    creditPayment = getPayment(carPrice - rebate, creditRate / 12, term * 12);
-    dealerPayment = getPayment(carPrice, dealerRate / 12, term * 12);
+    // Calculate payments
+    getPayment(carPrice - rebate, creditRate / 12, term * 12, creditPayment, creditTotal);
+    getPayment(carPrice, dealerRate / 12, term * 12, dealerPayment, dealerTotal);
 
-    // Calculate total payments
-    if (creditPayment != -1)
-        creditTotal = creditPayment * term * 12;
-    if (dealerPayment != -1)
-        dealerTotal = dealerPayment * term * 12;
-
-    // Display payments and totals
+    // Display results
     cout << fixed << setprecision(2) << endl;
     if (creditPayment != -1)
     {
@@ -50,7 +45,7 @@ int main()
         cout << "Total amount paid through credit union: $" << creditTotal << endl;
     }
     else
-        cout << "Credit union payment calculation error." << endl;
+        cout << "Credit union payment calculation error (invalid denominator)." << endl;
 
     if (dealerPayment != -1)
     {
@@ -58,17 +53,22 @@ int main()
         cout << "Total amount paid through dealer: $" << dealerTotal << endl;
     }
     else
-        cout << "Dealer payment calculation error." << endl;
+        cout << "Dealer payment calculation error (invalid denominator)." << endl;
 
     return 0;
 }
 
 // Function definition
-double getPayment(int prin, double monthRate, int months)
+void getPayment(int prin, double monthRate, int months, double& monthlyPayment, double& totalPayment)
 {
-    if (monthRate == 0 || months == 0)
+    if (monthRate == 0 || months <= 0)
     {
-        return -1; // Return -1 if the denominator is zero
+        monthlyPayment = -1; // Return -1 if the denominator is invalid
+        totalPayment = -1;
     }
-    return prin * monthRate / (1 - pow(1 + monthRate, -months));
+    else
+    {
+        monthlyPayment = prin * monthRate / (1 - pow(1 + monthRate, -months));
+        totalPayment = monthlyPayment * months;
+    }
 }
