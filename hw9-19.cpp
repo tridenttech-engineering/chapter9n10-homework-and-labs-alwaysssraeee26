@@ -67,3 +67,16 @@ int main()
 
     return 0;
 }
+
+// ****** Function Definition ******
+double getPayment(int principal, double monthRate, int months)
+{
+    double denominator = 1 - pow(1 + monthRate, -months);
+
+    // Verify that denominator is not zero (or extremely close)
+    if (fabs(denominator) < 1e-10)
+        return -1;  // Return -1 if invalid
+
+    double monthPay = principal * monthRate / denominator;
+    return monthPay;
+}
