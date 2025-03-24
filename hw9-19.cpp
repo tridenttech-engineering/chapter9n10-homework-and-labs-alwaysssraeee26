@@ -1,4 +1,4 @@
-// Lab9-19.cpp - displays two monthly car payments
+// Lab9-2.cpp - displays two monthly car payments
 // Created/revised by <your name> on <current date>
 
 #include <iostream>
