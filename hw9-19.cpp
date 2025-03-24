@@ -1,4 +1,4 @@
-// Lab9-19.cpp - displays two monthly car payments and total amounts
+// Lab9-19.cpp - Displays two monthly car payments and total amounts
 // Created/revised by <your name> on <current date>
 
 #include <iostream>
@@ -26,24 +26,29 @@ int main()
     cin >> carPrice;
     cout << "Rebate: ";
     cin >> rebate;
-    cout << "Credit union annual rate (as a decimal): ";
+    cout << "Credit union annual interest rate (as decimal): ";
     cin >> creditRate;
-    cout << "Dealer annual rate (as a decimal): ";
+    cout << "Dealer annual interest rate (as decimal): ";
     cin >> dealerRate;
-    cout << "Term in years: ";
+    cout << "Loan term in years: ";
     cin >> term;
 
+    // Convert annual interest rates to monthly and years to months
+    double creditMonthRate = creditRate / 12;
+    double dealerMonthRate = dealerRate / 12;
+    int months = term * 12;
+
     // Call function to calculate payments
-    creditPayment = getPayment(carPrice - rebate, creditRate / 12, term * 12);
-    dealerPayment = getPayment(carPrice, dealerRate / 12, term * 12);
+    creditPayment = getPayment(carPrice - rebate, creditMonthRate, months);
+    dealerPayment = getPayment(carPrice, dealerMonthRate, months);
 
-    // Calculate total amounts if valid payments were returned
+    // Calculate total amounts
     if (creditPayment != -1)
-        creditTotal = creditPayment * (term * 12);
+        creditTotal = creditPayment * months;
     if (dealerPayment != -1)
-        dealerTotal = dealerPayment * (term * 12);
+        dealerTotal = dealerPayment * months;
 
-    // Display results
+    // Display payments and totals
     cout << fixed << setprecision(2) << endl;
 
     if (creditPayment != -1)
@@ -52,7 +57,7 @@ int main()
         cout << "Total amount paid through credit union: $" << creditTotal << endl;
     }
     else
-        cout << "Error: Invalid calculation for credit union payment (denominator was zero or invalid inputs)." << endl;
+        cout << "Error: Invalid calculation for credit union payment." << endl;
 
     if (dealerPayment != -1)
     {
@@ -60,7 +65,7 @@ int main()
         cout << "Total amount paid through dealer: $" << dealerTotal << endl;
     }
     else
-        cout << "Error: Invalid calculation for dealer payment (denominator was zero or invalid inputs)." << endl;
+        cout << "Error: Invalid calculation for dealer payment." << endl;
 
     return 0;
 }
@@ -68,15 +73,17 @@ int main()
 // ****** Function Definition ******
 double getPayment(int prin, double monthRate, int months)
 {
-    if (months <= 0)
+    if (months <= 0)  // Ensure valid loan term
         return -1;
 
-    double powerTerm = pow(1 + monthRate, -months);
-    double denominator = 1 - powerTerm;
+    // Calculate denominator
+    double denominator = (1 - pow(1 + monthRate, -months));
 
-    if (denominator == 0) // Check if the denominator is zero
+    // Ensure denominator is not zero
+    if (denominator == 0)
         return -1;
 
-    double monthPay = (prin * monthRate) / denominator;
+    // Compute monthly payment
+    double monthPay = prin * monthRate / denominator;
     return monthPay;
 }
