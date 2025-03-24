@@ -26,9 +26,9 @@ int main()
     cin >> carPrice;
     cout << "Rebate: ";
     cin >> rebate;
-    cout << "Credit union rate: ";
+    cout << "Credit union annual rate (as a decimal): ";
     cin >> creditRate;
-    cout << "Dealer rate: ";
+    cout << "Dealer annual rate (as a decimal): ";
     cin >> dealerRate;
     cout << "Term in years: ";
     cin >> term;
@@ -52,7 +52,7 @@ int main()
         cout << "Total amount paid through credit union: $" << creditTotal << endl;
     }
     else
-        cout << "Error: Invalid calculation for credit union payment." << endl;
+        cout << "Error: Invalid calculation for credit union payment (denominator was zero)." << endl;
 
     if (dealerPayment != -1)
     {
@@ -60,7 +60,7 @@ int main()
         cout << "Total amount paid through dealer: $" << dealerTotal << endl;
     }
     else
-        cout << "Error: Invalid calculation for dealer payment." << endl;
+        cout << "Error: Invalid calculation for dealer payment (denominator was zero)." << endl;
 
     return 0;
 }
@@ -68,9 +68,13 @@ int main()
 // ****** Function Definition ******
 double getPayment(int prin, double monthRate, int months)
 {
-    if (monthRate == 0 || months <= 0)
-        return -1; // Return -1 if the denominator is invalid
+    if (months <= 0) // Invalid term
+        return -1;
 
-    double monthPay = prin * monthRate / (1 - pow(1 + monthRate, -months));
+    double denominator = (1 - pow(1 + monthRate, -months));
+    if (denominator == 0) // Check denominator
+        return -1;
+
+    double monthPay = prin * monthRate / denominator;
     return monthPay;
 }
