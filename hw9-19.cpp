@@ -78,5 +78,6 @@ double getPayment(int principal, double monthRate, int months)
         return -1;  // Return -1 if invalid
 
     double monthPay = principal * monthRate / denominator;
-    return monthPay;
+    double roundedPay = static_cast<int>((monthPay + .005) * 100) / 100.0; // Added rounding
+    return roundedPay;
 }
